@@ -3,6 +3,8 @@ import random
 import math
 from pygame import mixer
 import time
+import runpy
+from main import *
 
 pygame.init()  # Инициализация
 ScreenWidth, ScreenHeight = 800, 600  # Размер Экрана
@@ -96,7 +98,9 @@ while Game:
                     Bullet(BulletX, BulletY)
             if event.key == pygame.K_ESCAPE:
                 Game = False
-                pygame.quit()
+                runpy.run_path('main.py')
+                StartScreenRQ()
+                
         if event.type == pygame.KEYUP:
             HeroXChanged = 0
 
