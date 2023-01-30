@@ -1,6 +1,8 @@
 import pygame
 import time
 import random
+from main import *
+from pygame import mixer
 
 pygame.init() # Инициализация
 WhiteColor = (255, 255, 255) # Белый Цвет
@@ -29,22 +31,28 @@ def MessageFail(msg, color):
     Screen.blit(message, [800 / 2 - message.get_width() // 2, 600 / 2 - message.get_height() // 2]) # Вывод
 
 def GameZmeyka():
+    if random.randint(1, 2) == 1:
+        mixer.music.load('data/Matery.wav') # Музыка(Загрузка)
+        mixer.music.play(-1) # Музыка(Проигрывание)
+    else:
+        mixer.music.load('data/War.wav') # Музыка(Загрузка)
+        mixer.music.play(-1) # Музыка(Проигрывание)
     GameFail = False # Статус Игры
     GameClose = False # Статус Игры
     X1 = ScreenWidth / 2 # Серидина по X
     Y1 = ScreenHeight / 2 # Середина по Y
-    X1Changed = 0 
+    X1Changed = 0
     Y1Changed = 0
     SnakePositions = list() # Список позиций змейки
     SnakeLenght = 1 # Стандарная длина змеи
 
     # Генерация по X и Y Еды
-    BoostCoordinateX = round(random.randrange(0, ScreenWidth - SnakeHeight) / 10.0) * 10.0 
+    BoostCoordinateX = round(random.randrange(0, ScreenWidth - SnakeHeight) / 10.0) * 10.0
     BoostCoordinateY = round(random.randrange(0, ScreenHeight - SnakeHeight) / 10.0) * 10.0
 
     # Игровой Цикл
     while not GameFail:
-        while GameClose == True: # Пока игра завершена
+        while GameClose: # Пока игра завершена
             Screen.fill(Background) # Фон
             MessageFail("GAME OVER", WhiteColor) # Сообщение
             GameScore(SnakeLenght - 1) # Счет
@@ -52,14 +60,18 @@ def GameZmeyka():
             for event in pygame.event.get(): # Отслеживаем действия после смерти
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE: # Если Esc - Выход
+                        pygame.mixer.quit()
                         GameFail = True
                         GameClose = False
+                        return True
                     if event.key == pygame.K_SPACE: # Если Space - Заново
                         GameZmeyka()
         # Цикл пока игра идет:
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # Выход из игры
                 GameFail = True
+                return True
+
             if event.type == pygame.KEYDOWN: # Если нажата кнопка
                 if event.key == pygame.K_a:
                     X1Changed = -SnakeHeight # Влево движение
@@ -100,4 +112,3 @@ def GameZmeyka():
             SnakeLenght += 1 # Увеличение длины
         clock.tick(SnakeSpeed)
     pygame.quit() # Выход иг игры
-GameZmeyka()
